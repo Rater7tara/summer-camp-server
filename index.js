@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const app = express();
 
 const stripe = require('stripe')('PAYMENT_SECRET_KEY')
-const port = 'PORT' || 5000;
+const port = process.env.PORT || 5000;
 
 
 // middleware
