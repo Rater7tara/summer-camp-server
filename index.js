@@ -4,8 +4,8 @@ const cors = require ('cors');
 const jwt = require('jsonwebtoken');
 const app = express();
 
-const stripe = require('stripe')(process.env.PAYMENT_SECRET_KEY)
-const port = process.env.PORT || 5000;
+const stripe = require('stripe')('PAYMENT_SECRET_KEY')
+const port = 'PORT' || 5000;
 
 
 // middleware
@@ -20,7 +20,7 @@ const verifyJWT = (req, res, next) => {
   // bearer token
   const token = authorization.split(' ')[1];
 
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+  jwt.verify(token, 'ACCESS_TOKEN_SECRET', (err, decoded) => {
     if (err) {
       return res.status(401).send({ error: true, message: 'unauthorized access' })
     }
@@ -32,7 +32,7 @@ const verifyJWT = (req, res, next) => {
 
 // Mongodb
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@nowshinkhan.c8ljhxf.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${'DB_USER'}:${'DB_PASS'}@nowshinkhan.c8ljhxf.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -55,7 +55,7 @@ async function run() {
 
       app.post('/jwt', (req, res) => {
         const user = req.body;
-        const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
+        const token = jwt.sign(user, 'ACCESS_TOKEN_SECRET', { expiresIn: '1h' })
   
         res.send({ token })
       })
@@ -106,7 +106,7 @@ async function run() {
     // security layer: verifyJWT
     // email same
     // check admin
-    app.get('/users/admin/:email', verifyJWT, async (req, res) => {
+    app.get('/users/admin/:email', verifyJWT, verifyAdmin, async (req, res) => {
       const email = req.params.email;
 
       if (req.decoded.email !== email) {
